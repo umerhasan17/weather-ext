@@ -1,7 +1,7 @@
 {
   "name": "weather_ext",
   "version": "0.1.0",
-  "description": "Test weather extension ",
+  "description": "Test weather extension displays weather for a given city.",
   "keywords": [
     "jupyter",
     "jupyterlab",
@@ -12,7 +12,7 @@
     "url": "https://github.com/umerhasan17/weather-ext/issues"
   },
   "license": "BSD-3-Clause",
-  "author": "umer",
+  "author": "Umer",
   "files": [
     "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
     "style/**/*.{css,eot,gif,html,jpg,json,png,svg,woff2,ttf}"
@@ -31,11 +31,12 @@
     "watch": "tsc -w"
   },
   "dependencies": {
-    "@jupyterlab/application": "^1.0.0"
+    "@jupyterlab/application": "^2.0.0",
+    "@phosphor/widgets": "^1.9.3"
   },
   "devDependencies": {
     "rimraf": "^2.6.1",
-    "typescript": "~3.5.2"
+    "typescript": "~3.7.0"
   },
   "sideEffects": [
     "style/*.css"
