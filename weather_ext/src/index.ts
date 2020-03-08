@@ -120,8 +120,8 @@ const extension: JupyterFrontEndPlugin<void> = {
                 <p class="summaryText">${data.current.weather_descriptions[0]}</p>\
               </div>\
               <div class="location">${data.location.name}, ${data.location.country}</div>\
-              <div class="precipitation">Precipitation: ${data.current.precip} mm</div>\
-              <div class="wind">Wind: ${data.current.wind_speed} kph</div>\
+              <div class="details-elem">Precipitation: ${data.current.precip} mm</div>\
+              <div class="details-elem">Wind: ${data.current.wind_speed} kph</div>\
             </div>\
             <div class="pictoFrame"></div>\
             <div class="pictoCloudBig"></div>

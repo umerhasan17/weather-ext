@@ -42,10 +42,6 @@
 	box-sizing: border-box;
 }
 
-body {
-	background: #cef;
-}
-
 .container {
 	display: flex;
 	justify-content: center;
@@ -145,7 +141,7 @@ body {
 	margin-left: 56px;
 }
 
-.location, .precipitation, .wind {
+.location, .details-elem {
 	color: #d2e9fa;
 	font-size: 1.6em;
 	font-weight: 300;
@@ -156,11 +152,7 @@ body {
 	margin-top: 16px;
 }
 
-.precipitation {
-	margin-top: 4px;
-}
-
-.wind {
+.details-elem {
 	margin-top: 4px;
 }
  
