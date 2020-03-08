@@ -1,3 +1,5 @@
+import * as config from './config'
+
 import {
   JupyterFrontEnd, JupyterFrontEndPlugin
 } from '@jupyterlab/application';
@@ -11,6 +13,29 @@ import {
 } from '@lumino/widgets';
 
 
+interface WeatherStackResponse {
+  request: object;
+  location: object;
+  current: {
+    observation_time: string,
+    temperature: number,
+    weather_code: number,
+    weather_icons: string
+    weather_descriptions: string,
+    wind_speed: number,
+    wind_degree: number,
+    wind_dir: string
+    pressure: number,
+    precip: number
+    humidity: number,
+    cloudcover: number,
+    feelslike: number,
+    uv_index: number,
+    visibility: number
+  };
+}
+
+
 /** 
  * Initialization data for the weather_ext extension.
  */
@@ -18,7 +43,7 @@ const extension: JupyterFrontEndPlugin<void> = {
   id: 'weather_ext',
   autoStart: true,
   requires: [ICommandPalette],
-  activate: (app: JupyterFrontEnd, palette: ICommandPalette) => {
+  activate: async (app: JupyterFrontEnd, palette: ICommandPalette) => {
     console.log('JupyterLab extension weather_ext is activated!');
   
     // Create a blank content widget inside of a MainAreaWidget
@@ -27,7 +52,58 @@ const extension: JupyterFrontEndPlugin<void> = {
     widget.id = 'weather_ext';
     widget.title.label = 'Weather Extension Panel';
     widget.title.closable = true;
-  
+
+    const data = {nothing: 'yet'};
+    console.log("Here is the data queried:\n");
+    console.log(data);
+
+
+    function getWeather(event: { preventDefault: () => void; }) {
+      event.preventDefault();
+      console.log('run getWeather()');
+      const test = document.createElement('p');
+      const location = (<HTMLInputElement>document.getElementById('location')).value;
+      /* validate input */ 
+      if (!/^[a-zA-Z]+$/.test(location)) {
+        test.innerHTML = 'unrecognised input entered!';
+      }
+    
+      const data = (async (location) => {
+        const api_key: string = config.WEATHERSTACK_API_KEY;
+        const response = await fetch(`http://api.weatherstack.com/current?access_key=${api_key}&query=${location}`);
+        const data = await response.json() as WeatherStackResponse;
+        return data;
+      })(location);
+    
+      console.log(location);
+      console.log(data);
+    
+    
+      test.innerHTML = 'get weather function was run';
+      content.node.appendChild(test) 
+    }
+    
+    const weather = document.createElement('form');
+    
+    if (weather.addEventListener) {
+      weather.addEventListener('submit', getWeather, false);
+    } else {
+      weather.attachEvent('onsubmit', getWeather);
+    }
+    
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.id = 'location';
+    weather.appendChild(input);
+    
+    const submit = document.createElement('input');
+    submit.type = 'submit';
+    submit.value = 'Go';
+    weather.appendChild(submit);
+    
+    // document.body.append(weather);
+    content.node.appendChild(weather);
+
     // Add an application command
     const command: string = 'weather:open';
     app.commands.addCommand(command, {
@@ -43,7 +119,7 @@ const extension: JupyterFrontEndPlugin<void> = {
     });
   
     // Add the command to the palette.
-    palette.addItem({command, category: 'Tutorial'});
+    palette.addItem({command, category: 'Widgets'});
   }
 };
 
