@@ -1,4 +1,4 @@
-import * as config from './config'
+// import * as config from './config'
 
 import {
   JupyterFrontEnd, JupyterFrontEndPlugin
@@ -53,12 +53,7 @@ const extension: JupyterFrontEndPlugin<void> = {
     widget.title.label = 'Weather Extension Panel';
     widget.title.closable = true;
 
-    const data = {nothing: 'yet'};
-    console.log("Here is the data queried:\n");
-    console.log(data);
-
-
-    function getWeather(event: { preventDefault: () => void; }) {
+    async function getWeather(event: { preventDefault: () => void; }) {
       event.preventDefault();
       console.log('run getWeather()');
       const test = document.createElement('p');
@@ -68,16 +63,15 @@ const extension: JupyterFrontEndPlugin<void> = {
         test.innerHTML = 'unrecognised input entered!';
       }
     
-      const data = (async (location) => {
-        const api_key: string = config.WEATHERSTACK_API_KEY;
-        const response = await fetch(`http://api.weatherstack.com/current?access_key=${api_key}&query=${location}`);
-        const data = await response.json() as WeatherStackResponse;
-        return data;
-      })(location);
-    
+      const response = await fetch('http://www.mocky.io/v2/5e653135340000a93c33899f');
+      // const response = await fetch(`http://api.weatherstack.com/current?access_key=${api_key}&query=${location}`);
+      const data = await response.json() as WeatherStackResponse;
+
       console.log(location);
       console.log(data);
+      console.log(`This is the type of data: ${typeof(data)}`);
     
+      console.log(data.current.temperature);
     
       test.innerHTML = 'get weather function was run';
       content.node.appendChild(test) 
