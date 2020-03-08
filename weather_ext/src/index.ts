@@ -14,8 +14,23 @@ import {
 
 
 interface WeatherStackResponse {
-  request: object;
-  location: object;
+  request: {
+    type: string,
+    query: string,
+    language: string,
+    unit: string
+  };
+  location: {
+    name: string,
+    country: string,
+    region: string,
+    lat: string,
+    lon: string,
+    timezone_id: string,
+    localtime: string,
+    localtime_epoch: number,
+    utc_offset: string
+  };
   current: {
     observation_time: string,
     temperature: number,
@@ -35,10 +50,16 @@ interface WeatherStackResponse {
   };
 }
 
+interface WeatherStackErrorResponse {
+  success: boolean,
+  error: {
+      code: number,
+      type: string,
+      info: string   
+  }
+}
 
-/** 
- * Initialization data for the weather_ext extension.
- */
+
 const extension: JupyterFrontEndPlugin<void> = {
   id: 'weather_ext',
   autoStart: true,
@@ -53,29 +74,65 @@ const extension: JupyterFrontEndPlugin<void> = {
     widget.title.label = 'Weather Extension Panel';
     widget.title.closable = true;
 
+    const info = document.createElement('p');
+    const displayContainer = document.createElement('div');
+    info.className = 'error-message';
+
     async function getWeather(event: { preventDefault: () => void; }) {
       event.preventDefault();
       console.log('run getWeather()');
-      const test = document.createElement('p');
+      info.innerHTML = '';
+      displayContainer.innerHTML = '';
       const location = (<HTMLInputElement>document.getElementById('location')).value;
       /* validate input */ 
-      if (!/^[a-zA-Z]+$/.test(location)) {
-        test.innerHTML = 'unrecognised input entered!';
-      }
-    
-      const response = await fetch('http://www.mocky.io/v2/5e653135340000a93c33899f');
-      // const response = await fetch(`http://api.weatherstack.com/current?access_key=${api_key}&query=${location}`);
-      const data = await response.json() as WeatherStackResponse;
+      if (!/^[a-zA-Z\s]*$/.test(location)) {
+        info.innerHTML = 'Unrecognised input entered!';
+      } else {
+        const response = await fetch('http://www.mocky.io/v2/5e6544883400007b663389c3');
+        // const response = await fetch('http://www.mocky.io/v2/5e653135340000a93c33899f');
+        // const response = await fetch(`http://api.weatherstack.com/current?access_key=${api_key}&query=${location}`);
 
-      console.log(location);
-      console.log(data);
-      console.log(`This is the type of data: ${typeof(data)}`);
-    
-      console.log(data.current.temperature);
-    
-      test.innerHTML = 'get weather function was run';
-      content.node.appendChild(test) 
+        const result = await response.json();
+        
+        function isValid(result: WeatherStackResponse | WeatherStackErrorResponse): result is WeatherStackResponse {
+          return (result as WeatherStackResponse) !== undefined;
+        }
+
+        if (isValid(result)) {
+          displayWeather(result as WeatherStackResponse);
+        } else {
+          const error = result as WeatherStackErrorResponse;
+          info.innerHTML = error.error.info;
+        }
+      }
+  
+      content.node.appendChild(info) 
     }
+
+    function displayWeather(data: WeatherStackResponse) {
+      console.log(data);
+      displayContainer.innerHTML = 
+        `<div class="container">\
+          <div class="widget">\
+            <div class="details">\
+              <div class="temperature">${data.current.temperature}&deg;C</div>\
+              <div class="summary">\
+                <p class="summaryText">${data.current.weather_descriptions[0]}</p>\
+              </div>\
+              <div class="location">${data.location.name}, ${data.location.country}</div>\
+              <div class="precipitation">Precipitation: ${data.current.precip} mm</div>\
+              <div class="wind">Wind: ${data.current.wind_speed} kph</div>\
+            </div>\
+            <div class="pictoFrame"></div>\
+            <div class="pictoCloudBig"></div>
+            <div class="pictoCloudFill"></div>
+            <div class="pictoCloudSmall"></div>
+            <img class="main-icon" src="${data.current.weather_icons[0]}"/>\
+          </div>\
+        </div>`;
+      content.node.appendChild(displayContainer);
+    }
+
     
     const weather = document.createElement('form');
     
@@ -84,18 +141,14 @@ const extension: JupyterFrontEndPlugin<void> = {
     } else {
       weather.attachEvent('onsubmit', getWeather);
     }
-    
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.id = 'location';
-    weather.appendChild(input);
-    
-    const submit = document.createElement('input');
-    submit.type = 'submit';
-    submit.value = 'Go';
-    weather.appendChild(submit);
-    
-    // document.body.append(weather);
+
+    const input = document.createElement('div');
+    input.innerHTML = 
+      '<div class="wrapper">\
+        <span>Find the weather for <input class="input" id="location" placeholder="location" type="text" ><input class="submit-button" type="submit" value="Go"></span>\
+      </div>';
+    weather.appendChild(input);    
+
     content.node.appendChild(weather);
 
     // Add an application command
