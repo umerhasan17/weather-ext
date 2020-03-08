@@ -52,8 +52,9 @@ async function activate (app: JupyterFrontEnd, palette: ICommandPalette) {
       const result = await response.json();
       
       // Check if API returned correct response or improper response e.g. API couldn't parse input as location doesn't exist. 
-      function isValid(result: WeatherStackResponse | WeatherStackErrorResponse): result is WeatherStackResponse {
-        return (result as WeatherStackResponse) !== undefined;
+      function isValid(result: WeatherStackResponse | WeatherStackErrorResponse) {
+        console.log((result as WeatherStackErrorResponse).success)
+        return (result as WeatherStackErrorResponse).success === undefined;
       }
 
       if (isValid(result)) {
