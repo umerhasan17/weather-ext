@@ -12,7 +12,7 @@ Test weather extension displays weather for a given city.
 ## Install
 
 ```bash
-jupyter labextension install weather_ext
+jupyter labextension install @umerhasan17/weather_ext
 ```
 
 ## Contributing

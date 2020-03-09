@@ -1,6 +1,6 @@
 {
-  "name": "weather_ext",
-  "version": "0.1.0",
+  "name": "@umerhasan17/weather_ext",
+  "version": "0.1.1",
   "description": "Test weather extension displays weather for a given city.",
   "keywords": [
     "jupyter",
@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/umerhasan17/weather-ext/issues"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "author": "Umer",
   "files": [
     "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
@@ -22,7 +22,7 @@
   "style": "style/index.css",
   "repository": {
     "type": "git",
-    "url": "https://github.com/umerhasan17/weather-ext.git"
+    "url": "git+https://github.com/umerhasan17/weather-ext.git"
   },
   "scripts": {
     "build": "tsc",
