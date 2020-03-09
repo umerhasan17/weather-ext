@@ -2,7 +2,7 @@
 
 ![Github Actions Status](https://github.com/umerhasan17/weather-ext/workflows/Build/badge.svg)
 
-Test weather extension 
+Test weather extension displays weather for a given city.
 
 
 ## Requirements
